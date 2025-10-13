@@ -126,6 +126,45 @@
     }
   }
 
+  /**
+   * Ajusta dinámicamente el tamaño de las celdas (variable CSS --cell-size) para que el tablero
+   * nunca se desborde del ancho disponible. Calcula el tamaño de cada casilla en función
+   * del número de columnas y del ancho del contenedor. Limita el tamaño máximo a 4rem
+   * (aproximadamente 64 px) para conservar proporciones en pantallas grandes.
+   */
+  function setResponsiveCellSize() {
+    // Elemento contenedor del tablero (padre de boardElem)
+    const container = boardElem.parentElement || document.body;
+    // Ancho disponible: el contenedor completo o 100% del viewport, limitado a 600 px
+    const availableWidth = Math.min(container.clientWidth || window.innerWidth, 600);
+    // Obtener valores de gap y font size para convertir rem a px
+    const rootStyles = getComputedStyle(document.documentElement);
+    const fontSize = parseFloat(rootStyles.fontSize); // px por 1rem
+    const gapRem = parseFloat(rootStyles.getPropertyValue('--cell-gap')) || 0.3; // fallback al valor por defecto
+    const gapPx = gapRem * fontSize;
+    // Calcular el tamaño máximo de celda a partir de la variable CSS --cell-size
+    // Si se especifica en rem, conviértelo a px usando fontSize. Si ya es px, úsalo tal cual.
+    let maxCellSize;
+    const cellSizeVar = rootStyles.getPropertyValue('--cell-size').trim();
+    if (cellSizeVar.endsWith('rem')) {
+      maxCellSize = parseFloat(cellSizeVar) * fontSize;
+    } else if (cellSizeVar.endsWith('px')) {
+      maxCellSize = parseFloat(cellSizeVar);
+    } else {
+      // Valor por defecto: 4rem
+      maxCellSize = 4 * fontSize;
+    }
+    // Calcular tamaño de celda en base al ancho disponible y al número de columnas
+    const sizePx = (availableWidth - gapPx * (numCols - 1)) / numCols;
+    const finalSize = Math.min(maxCellSize, sizePx);
+    // Aplicar nuevo valor a la variable CSS
+    document.documentElement.style.setProperty('--cell-size', `${finalSize}px`);
+  }
+  // Llamar al inicializar
+  setResponsiveCellSize();
+  // Actualizar al redimensionar la ventana
+  window.addEventListener('resize', setResponsiveCellSize);
+
   // Crear el teclado en pantalla
   const keyboardElem = document.getElementById("keyboard");
   const keyLayout = [
