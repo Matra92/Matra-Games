@@ -1,0 +1,251 @@
+/*
+ * Estilos para el clon de Wordle
+ * Puedes ajustar los colores y tamaños a tu gusto.
+ */
+
+:root {
+  /* Ajusta el tamaño de las celdas y su separación */
+  --cell-size: 4rem;
+  --cell-gap: 0.3rem;
+  /* Gradientes de fondo principal */
+  /* Variables para temas claro y oscuro */
+  --primary-bg-light: #f2f3f5;
+  --primary-bg-dark: #121213;
+  --border-color-light: #d3d6da;
+  --border-color-dark: #3a3a3c;
+  --key-bg-light: #d3d6da;
+  --key-bg-dark: #3a3a3c;
+  --cell-bg-light: #ffffff;
+  --cell-bg-dark: #121213;
+  --text-color-light: #121213;
+  --text-color-dark: #d7dadc;
+  --correct-bg-light: #6aaa64;
+  --present-bg-light: #c9b458;
+  --absent-bg-light: #787c7e;
+  --correct-bg-dark: #538d4e;
+  --present-bg-dark: #b59f3b;
+  --absent-bg-dark: #3a3a3c;
+  /* Fuente base */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  /* Variables dinámicas que se asignarán según el tema activo */
+  --primary-bg: var(--primary-bg-light);
+  --border-color: var(--border-color-light);
+  --key-bg: var(--key-bg-light);
+  --cell-bg: var(--cell-bg-light);
+  --text-color: var(--text-color-light);
+  --correct-bg: var(--correct-bg-light);
+  --present-bg: var(--present-bg-light);
+  --absent-bg: var(--absent-bg-light);
+}
+
+/* Temas claro y oscuro: estas clases asignan variables según el tema */
+body.light-mode {
+  --primary-bg: var(--primary-bg-light);
+  --border-color: var(--border-color-light);
+  --key-bg: var(--key-bg-light);
+  --cell-bg: var(--cell-bg-light);
+  --text-color: var(--text-color-light);
+  --correct-bg: var(--correct-bg-light);
+  --present-bg: var(--present-bg-light);
+  --absent-bg: var(--absent-bg-light);
+}
+
+body.dark-mode {
+  --primary-bg: var(--primary-bg-dark);
+  --border-color: var(--border-color-dark);
+  --key-bg: var(--key-bg-dark);
+  --cell-bg: var(--cell-bg-dark);
+  --text-color: var(--text-color-dark);
+  --correct-bg: var(--correct-bg-dark);
+  --present-bg: var(--present-bg-dark);
+  --absent-bg: var(--absent-bg-dark);
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--primary-bg);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Contenedor del encabezado: incluye título y botón de tema */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1rem;
+}
+
+/* Botón para alternar el tema claro/oscuro */
+#theme-toggle {
+  font-size: 1.5rem;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+#theme-toggle:hover {
+  background-color: var(--border-color);
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+/* El tablero usará una cuadrícula dinámica basada en la palabra */
+#board {
+  display: grid;
+  /* Las filas se definen en JS según el número de intentos */
+  /* Las columnas se ajustan dinámicamente en JS */
+  gap: var(--cell-gap);
+  margin-bottom: 1.5rem;
+}
+
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: 2px solid var(--border-color);
+  border-radius: 0.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  user-select: none;
+  background-color: var(--cell-bg);
+  color: var(--text-color);
+  box-shadow: none;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+/* Estados de las casillas */
+/* Estados de las casillas */
+.cell.correct {
+  background-color: var(--correct-bg);
+  color: white;
+  border-color: var(--correct-bg);
+}
+
+.cell.present {
+  background-color: var(--present-bg);
+  color: white;
+  border-color: var(--present-bg);
+}
+
+.cell.absent {
+  background-color: var(--absent-bg);
+  color: white;
+  border-color: var(--absent-bg);
+}
+
+/* Teclado */
+#keyboard {
+  /* El contenedor del teclado aloja filas flexibles */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: 600px;
+}
+
+/* Fila de teclas */
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+/* Desplazar ligeramente la segunda fila del teclado para imitar Wordle */
+.keyboard-row:nth-child(2) {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+/* Estilo básico para las teclas del teclado */
+.key {
+  min-width: 2.5rem;
+  min-height: 3rem;
+  padding: 0.5rem 0.6rem;
+  border: none;
+  border-radius: 0.25rem;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--key-bg);
+  text-transform: uppercase;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  line-height: 1;
+  box-shadow: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.key:hover {
+  /* Aclarar ligeramente la tecla al pasar el ratón */
+  filter: brightness(1.1);
+}
+
+.key.correct {
+  background-color: var(--correct-bg);
+  color: white;
+  border-color: var(--correct-bg);
+}
+
+.key.present {
+  background-color: var(--present-bg);
+  color: white;
+  border-color: var(--present-bg);
+}
+
+.key.absent {
+  background-color: var(--absent-bg);
+  color: white;
+  border-color: var(--absent-bg);
+}
+
+/* Teclas más anchas (Enter y Borrar) */
+.key.wide {
+  min-width: 4rem;
+  flex-grow: 1;
+}
+
+/* Celdas que representan espacios en frases: no se dibujan cuadros */
+.space {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: none;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+#message {
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  min-height: 2rem;
+  color: var(--text-color);
+  text-align: center;
+}
+
+footer {
+  margin-top: auto;
+  font-size: 0.875rem;
+  text-align: center;
+  max-width: 600px;
+}
