@@ -9,54 +9,44 @@
   // tablero se ajustará automáticamente a la longitud de la palabra
   // seleccionada. Procura incluir sólo palabras en mayúsculas o
   // utiliza el método .toUpperCase() al final como aquí.
-const wordList = [
-    "AUDI", // 5 letras
-    "CHAD",  // 4 letras
-    "MATEBU",  // 4 letras
-    "CHOCLO", // 6 letras
-    "MATI WOLF", // 5 letras
-    "HELLO GOODBYE", // 5 letras
-    "ILAN", // 5 letras
-    "SHALOM", // 5 letras (con tilde)
-    "EMPANADA", // 7 letras
-    "TATIANA", // 5 letras
-    "PARCIAL", // 3 letras
-    "CLASH ROYALE", // 4 letras
-    "ALMIBU", // 5 letras
-    "SARITA SAROTA", // 5 letras con tilde
-    "MATE DISCRETA",
-    "KODAK",
-    "SENAL",
-    "BAUTI INFIEL",
-    "ANTICHAD",
-    "PRIMITIVAS",
-    "LUCIANO",
-    "PHINEAS Y FERNAN",
-    "BROWNIE PLANET",
-    "COMPACTO",
-    "BOOM CHAKALAKA",
-    "CHI",
-    "MTURRIN",
-    "MADELINE CLINE",
-    "MATATE Y GRABALO",
-    "JEANS ROTOS",
-    "SARA VOMIT",
-    "PREMIOS PRECOZ",
-    "GIRA GIRA TU CALZON",
-    "MACHI",
-    "BERNI",
-    "COQUI",
-    "LITTLE TOMMY",
-    "DORMI",
-    "THEA CABANAS",
-    "SERGIO",
-    "MR MARVEL",
-    "MATRA",
-    "LOURDES",
-    "SALU SENIOR",
-    "MARTU",
-    "KIKI",
-    "JULIAN SHALOM"
+  const wordList = [
+    // Lista de palabras personalizada. Cada entrada puede incluir espacios.
+    // El tablero se adapta automáticamente al número de caracteres (espacios incluidos)
+    // pero los espacios no generan casillas, sólo huecos. Se sugiere escribir
+    // todas las palabras en mayúsculas para facilitar la comparación.
+    "AUDI",          // 4 letras
+    "CHAD",          // 4 letras
+    "MATEBU",        // 6 letras
+    "CHOCLO",        // 6 letras
+    "MATI WOLF",     // 8 caracteres (incluye espacio)
+    "HELLO GOODBYE", // 14 caracteres (incluye espacio)
+    "ILAN",          // 4 letras
+    "SHALOM",        // 6 letras
+    "EMPANADA",      // 8 letras
+    "TATIANA",       // 7 letras
+    "PARCIAL",       // 7 letras
+    "CLASH ROYALE",  // 12 caracteres (incluye espacio)
+    "ALMIBU",        // 6 letras
+    "SARITA SAROTA", // 13 caracteres (incluye espacio)
+    "MATE DISCRETA", // 13 caracteres (incluye espacio)
+    "KODAK",         // 5 letras
+    "SENAL",         // 5 letras (sin tilde)
+    "BAUTI INFIEL",  // 12 caracteres (incluye espacio)
+    "ANTICHAD",      // 8 letras
+    "PRIMITIVAS",    // 10 letras
+    "LUCIANO",       // 7 letras
+    "PHINEAS Y FERNAN", // 18 caracteres (incluye espacios)
+    "BROWNIE PLANET",// 13 caracteres (incluye espacio)
+    "COMPACTO",      // 8 letras
+    "BOOM CHAKALAKA",// 14 caracteres (incluye espacio)
+    "CHI",           // 3 letras
+    "MTURRIN",       // 7 letras
+    "MADELINE CLINE",// 15 caracteres (incluye espacio)
+    "MATATE Y GRABALO",// 17 caracteres (incluye espacio)
+    "JEANS ROTOS",   // 11 caracteres (incluye espacio)
+    "SARA VOMIT",    // 10 caracteres (incluye espacio)
+    "PREMIOS PRECOZ",// 14 caracteres (incluye espacio)
+    "GIRA GIRA TU CALZON" // 20 caracteres (incluye espacios)
   ];
 
   // Parámetros del juego

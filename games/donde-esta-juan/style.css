@@ -76,3 +76,30 @@ main {
   font-size: 1.2rem;
   color: #0a5fa6;
 }
+
+/* Ajustes responsivos */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.8rem;
+  }
+  header p {
+    font-size: 1rem;
+  }
+  #message {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  header h1 {
+    font-size: 1.6rem;
+  }
+  header p {
+    font-size: 0.95rem;
+  }
+  #message {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+}
