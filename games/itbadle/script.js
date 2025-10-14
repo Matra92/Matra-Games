@@ -15,10 +15,10 @@
     // pero los espacios no generan casillas, sólo huecos. Se sugiere escribir
     // todas las palabras en mayúsculas para facilitar la comparación.
     "AUDI",          // 4 letras
-    "CHAD",          // 4 letras
+    "MATI WOLF",          // 4 letras
     "MATEBU",        // 6 letras
     "CHOCLO",        // 6 letras
-    "MATI WOLF",     // 8 caracteres (incluye espacio)
+    "CHAD",     // 8 caracteres (incluye espacio)
     "HELLO GOODBYE", // 14 caracteres (incluye espacio)
     "ILAN",          // 4 letras
     "SHALOM",        // 6 letras
