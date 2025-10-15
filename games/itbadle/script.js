@@ -48,7 +48,7 @@
     "CLOCK IT",
     "CHAD",
     "ELISEO"
-
+]
   // Parámetros del juego
   const maxGuesses = 6;
 
