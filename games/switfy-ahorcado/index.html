@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ahorcado - Versión Taylor Swift</title>
+  <style>
+    :root{
+      --bg:#ffebf6;
+      --card:#ffe1f0;
+      --accent:#ff7eb9;
+      --good:#ff4fa2;
+      --bad:#c2185b;
+      --muted:#a36c84;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:'Poppins',sans-serif; background:linear-gradient(180deg,#ffccdf 0%, #ffc2e1 100%); color:#4a003a; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px}
+    .container{width:100%; max-width:960px; background:rgba(255,255,255,0.6); border-radius:16px; padding:24px; box-shadow:0 8px 30px rgba(255,105,180,0.4)}
+    header{text-align:center;}
+    h1{font-size:28px; color:#ff2e8e; margin-bottom:10px;}
+    .main{display:grid; grid-template-columns:1fr 360px; gap:20px; margin-top:20px}
+    .card{background:rgba(255,255,255,0.6); padding:16px; border-radius:12px}
+    .word{font-size:30px; letter-spacing:10px; text-align:center; margin:20px 0; font-weight:600; color:#7a004c;}
+    .keyboard{display:grid; grid-template-columns: repeat(10,1fr); gap:8px; margin-top:12px}
+    .key{padding:10px 8px; border-radius:8px; background:#ffaad1; color:white; text-align:center; cursor:pointer; user-select:none; transition:0.2s}
+    .key:hover{background:#ff8bbd}
+    .key.used{opacity:0.4; cursor:default; background:#ffd2e7}
+    .status{text-align:center; margin-top:10px;}
+    .message{padding:10px 12px; border-radius:10px; font-weight:600; text-align:center;}
+    .message.win{background:#ffe6f2; color:#ff0077;}
+    .message.lose{background:#ffe6f2; color:#b40059;}
+    svg{width:100%; height:100%; stroke:#ff0077;}
+    button{background:var(--accent); color:white; border:none; border-radius:8px; padding:10px 16px; cursor:pointer; transition:0.2s; font-weight:600;}
+    button:hover{background:#ff4fa2;}
+    #newBtn{display:block; margin:0 auto;}
+    @media (max-width:880px){ .main{grid-template-columns:1fr;} .keyboard{grid-template-columns:repeat(7,1fr);} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>💖 Ahorcado: Taylor's Edition 💖</h1>
+      <button id="newBtn">Nueva partida</button>
+    </header>
+
+    <div class="main">
+      <div class="card">
+        <div class="status">
+          <p>Intentos restantes: <strong id="lives">6</strong></p>
+          <div class="word" id="wordDisplay">_ _ _</div>
+          <p id="wordProgress">Letras encontradas: 0</p>
+        </div>
+
+        <div class="keyboard" id="keyboard"></div>
+        <div id="result" style="margin-top:20px"></div>
+      </div>
+
+      <div class="card" style="display:flex; align-items:center; justify-content:center; height:100%;">
+        <svg viewBox="0 0 200 240" id="gallows" aria-hidden="true">
+          <g stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="10" y1="230" x2="190" y2="230" />
+            <line x1="40" y1="210" x2="40" y2="20" />
+            <line x1="40" y1="20" x2="120" y2="20" />
+            <line x1="120" y1="20" x2="120" y2="40" />
+            <circle cx="120" cy="58" r="18" id="head" style="display:none" />
+            <line x1="120" y1="76" x2="120" y2="128" id="body" style="display:none" />
+            <line x1="120" y1="86" x2="96" y2="106" id="larm" style="display:none" />
+            <line x1="120" y1="86" x2="144" y2="106" id="rarm" style="display:none" />
+            <line x1="120" y1="128" x2="100" y2="164" id="lleg" style="display:none" />
+            <line x1="120" y1="128" x2="140" y2="164" id="rleg" style="display:none" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WORDS = ["august", "babe", "betty", "change", "clean", "closure", "cowboy", "daylight", "delicate", "dorothea", "dress", "enchanted", "epiphany", "exile", "fearless", "fifteen", "gorgeous", "happiness", "haunted", "honey", "hoax", "innocent", "invisible", "ivy", "karma", "labyrinth", "loml", "lover", "marjorie", "maroon", "mastermind", "mean", "mine", "mirrorball", "nashville", "need", "opalite", "ours", "paris", "peace", "peter", "question", "red", "renegade", "riptide", "robin", "ronan", "seven", "slut", "style", "superman", "timeless", "treacherous", "untouchable", "wonderland", "wood", "willow"];
+
+    let secret = '';
+    let revealed = [];
+    let lives = 6;
+    let used = new Set();
+    let won = false;
+    let lost = false;
+
+    const wordDisplay = document.getElementById('wordDisplay');
+    const livesEl = document.getElementById('lives');
+    const keyboardEl = document.getElementById('keyboard');
+    const resultEl = document.getElementById('result');
+    const newBtn = document.getElementById('newBtn');
+    const wordProgress = document.getElementById('wordProgress');
+    const faceParts = ['head','body','larm','rarm','lleg','rleg'];
+
+    function buildKeyboard(){
+      keyboardEl.innerHTML='';
+      const letters = 'abcdefghijklmnñopqrstuvwxyz';
+      for(const ch of letters){
+        const btn = document.createElement('div');
+        btn.className='key';
+        btn.textContent=ch.toUpperCase();
+        btn.dataset.letter=ch;
+        btn.addEventListener('click', ()=> tryLetter(ch));
+        keyboardEl.appendChild(btn);
+      }
+    }
+
+    function pickWord(){
+      const idx = Math.floor(Math.random()*WORDS.length);
+      return WORDS[idx];
+    }
+
+    function updateDisplay(){
+      wordDisplay.textContent = revealed.map(c => c ? c.toUpperCase() : '_').join(' ');
+      livesEl.textContent = lives;
+      wordProgress.textContent = `Letras encontradas: ${revealed.filter(Boolean).length}`;
+      document.querySelectorAll('.key').forEach(k=>{
+        const l = k.dataset.letter;
+        k.classList.toggle('used', used.has(l));
+      });
+    }
+
+    function revealPart(){
+      const wrong = 6 - lives;
+      if(wrong<=faceParts.length){
+        const id = faceParts[wrong-1];
+        if(id){
+          const el = document.getElementById(id);
+          if(el) el.style.display='';
+        }
+      }
+    }
+
+    function resetGallows(){
+      for(const id of faceParts){
+        const el = document.getElementById(id);
+        if(el) el.style.display = 'none';
+      }
+    }
+
+    function tryLetter(letter){
+      if(won || lost) return;
+      if(used.has(letter)) return;
+      used.add(letter);
+      const positions = [];
+      for(let i=0;i<secret.length;i++){
+        if(secret[i]===letter) positions.push(i);
+      }
+      if(positions.length>0){
+        for(const p of positions) revealed[p]=secret[p];
+        checkWin();
+      } else {
+        lives--;
+        revealPart();
+        if(lives<=0){ loseGame(); }
+      }
+      updateDisplay();
+    }
+
+    function checkWin(){
+      if(revealed.every(Boolean)) winGame();
+    }
+
+    function winGame(){
+      won=true; resultEl.innerHTML = `<div class="message win">✨ ¡Ganaste, swiftie! La palabra era <strong>${secret.toUpperCase()}</strong> ✨</div>`;
+    }
+
+    function loseGame(){
+      lost=true; resultEl.innerHTML = `<div class="message lose">💔 Perdiste... la palabra era <strong>${secret.toUpperCase()}</strong></div>`;
+      revealed = secret.split('');
+      updateDisplay();
+    }
+
+    function startGame(){
+      secret = pickWord();
+      revealed = Array.from({length: secret.length}, ()=> false);
+      used = new Set();
+      lives = 6; won=false; lost=false;
+      resultEl.innerHTML='';
+      resetGallows();
+      updateDisplay();
+    }
+
+    newBtn.addEventListener('click', startGame);
+
+    window.addEventListener('keydown', (e)=>{
+      if(e.key.length===1){
+        const k = e.key.toLowerCase();
+        if(/[a-zñ]/.test(k)) tryLetter(k);
+      }
+      if(e.key==='Enter' && (won || lost)) startGame();
+    });
+
+    buildKeyboard();
+    startGame();
+  </script>
+</body>
+</html>
